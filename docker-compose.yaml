@@ -24,12 +24,12 @@ services:
     # Uncomment the following line to build from source. This will take a few minutes. Comment the next two lines out if you want to use the offiicial image.
     # build:
       # context: .
-    expose:
+    ports:
       # If changing the local port (left hand side), no other changes required.
       # If changing the remote port (right hand side),
       #   change the port in the args in the build section,
       #   as well as the port in the command section to match
-      - 42110
+      - 42110:42110
     working_dir: /app
     volumes:
       - khoj_config:/root/.khoj/
