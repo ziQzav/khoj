@@ -3,7 +3,7 @@ services:
   database:
     image: ankane/pgvector
     expose:
-      - "5432:5432"
+      - 5432
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -29,7 +29,7 @@ services:
       # If changing the remote port (right hand side),
       #   change the port in the args in the build section,
       #   as well as the port in the command section to match
-      - "42110:42110"
+      - 42110
     working_dir: /app
     volumes:
       - khoj_config:/root/.khoj/
