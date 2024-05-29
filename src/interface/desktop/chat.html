@@ -385,6 +385,16 @@
 
             let anchorElements = element.querySelectorAll('a');
             anchorElements.forEach((anchorElement) => {
+                // Tag external links to open in separate window
+                if (
+                    !anchorElement.href.startsWith("./") &&
+                    !anchorElement.href.startsWith("#") &&
+                    !anchorElement.href.startsWith("/")
+                ) {
+                    anchorElement.setAttribute('target', '_blank');
+                    anchorElement.setAttribute('rel', 'noopener noreferrer');
+                }
+
                 // Add the class "inline-chat-link" to each element
                 anchorElement.classList.add("inline-chat-link");
             });
@@ -1695,9 +1705,10 @@
             content: "▶";
             margin-right: 5px;
             display: inline-block;
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.1s ease-in-out;
         }
 
+        button.reference-button.expanded::before,
         button.reference-button:active:before,
         button.reference-button[aria-expanded="true"]::before {
             transform: rotate(90deg);
