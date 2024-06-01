@@ -487,6 +487,10 @@ async def websocket_endpoint(
             if conversation:
                 await sync_to_async(conversation.refresh_from_db)(fields=["conversation_log"])
             q = await websocket.receive_text()
+
+            # Refresh these because the connection to the database might have been closed
+            await conversation.arefresh_from_db()
+
         except WebSocketDisconnect:
             logger.debug(f"User {user} disconnected web socket")
             break
@@ -582,7 +586,7 @@ async def websocket_endpoint(
 
         if compiled_references:
             headings = "\n- " + "\n- ".join(
-                set([" ".join(c.split("Path: ")[1:]).split("\n ")[0] for c in compiled_references])
+                set([" ".join(c.get("compiled", c).split("Path: ")[1:]).split("\n ")[0] for c in compiled_references])
             )
             await send_status_update(f"**📜 Found Relevant Notes**: {headings}")
 
@@ -940,6 +944,12 @@ async def chat(
 
     actual_response = aggregated_gpt_response.split("### compiled references:")[0]
 
-    response_obj = {"response": actual_response, "context": compiled_references}
+    response_obj = {
+        "response": actual_response,
+        "intentType": intent_type,
+        "inferredQueries": inferred_queries,
+        "context": compiled_references,
+        "online_results": online_results,
+    }
 
     return Response(content=json.dumps(response_obj), media_type="application/json", status_code=200)
